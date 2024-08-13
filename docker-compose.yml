@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./db.sql:/docker-entrypoint-initdb.d/db.sql
+
+  postgrest:
+    image: postgrest/postgrest:latest
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://postgres:postgres@db:5432/postgres
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: postgres
+      PGRST_DB_SCHEMA_QUERY: public
+    depends_on:
+      - db
